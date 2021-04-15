@@ -8,9 +8,6 @@ import json
 import subprocess
 import threading
 
-# Reveals whether the server is running. TODO Is there a better way to handle this?
-# server_running = False
-
 # I imagine we want a call_task() function and an on_task_finished() function here.
 # The latter would move the task from the database to a separate "finished" database, call the next task
 # and update all the queue positions in the database.
@@ -158,11 +155,16 @@ def get_queued_tasks(request):
 
 def index(request):
     print("Entering index function")
-    print("server running ", ProcessingStatus.objects.get().is_running)
     task_list = ProcessingTask.objects.all()
     log_folder = "C:/utveckling/Django/queue_gui_processing"
 
-    # TODO Maybe check if a ProcessingStatus exists and create one if not.
+    # Check if a ProcessingStatus exists and create one if not.
+    status = ProcessingStatus.objects.all()
+    if not status:
+        new_status = ProcessingStatus()
+        new_status.is_running = True
+        new_status.current_task = None
+        new_status.save()
 
     default_command = "python C:/utveckling/Django/queue_gui/print_tet.py whatevs"
 
