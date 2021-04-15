@@ -3,6 +3,7 @@ from django.urls import reverse
 from .models import ProcessingTask, ProcessingStatus
 from django.http import HttpResponse, JsonResponse
 from django.core.serializers import serialize
+from django.views.decorators.csrf import ensure_csrf_cookie
 
 import json
 import subprocess
@@ -93,10 +94,14 @@ def run_task(task):
         check_next_task()
 
 
+# @ensure_csrf_cookie
 def add_task(request):
     # Get last position index in queue.
     tasks = ProcessingTask.objects.order_by('-position')
-    current_queue_length = tasks.first().position
+    if not tasks:
+        current_queue_length = 0
+    else:
+        current_queue_length = tasks.first().position
     # print(json.loads(request.body))
 
     # Create new task.
@@ -153,6 +158,7 @@ def get_queued_tasks(request):
     return HttpResponse(queued_tasks_json, content_type="application/json")
 
 
+# @ensure_csrf_cookie
 def index(request):
     print("Entering index function")
     task_list = ProcessingTask.objects.all()
