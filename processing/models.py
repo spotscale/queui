@@ -9,10 +9,6 @@ class ProcessingTask(models.Model):
     # Name of person who added the task.
     added_by = models.CharField(max_length=200)
 
-    # Position in queue. No default value as this depends on queue length.
-    # position = models.PositiveIntegerField(unique=True)
-    # TODO Maybe the queue should be an own table, with ProcessingTasks as foreign keys.
-
     # Whether task is done.
     is_done = models.BooleanField(default=False)
 

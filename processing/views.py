@@ -17,10 +17,6 @@ def check_next_task():
 
     status = ProcessingStatus.objects.first()
     ready_for_task = False
-    print("status.is_running")
-    print(status.is_running)
-    print("status.current_task")
-    print(status.current_task)
     if status:
         ready_for_task = (status.is_running and not status.current_task)
     else:
@@ -97,12 +93,8 @@ def run_task(task):
         with transaction.atomic():  # Don't allow any other changes to database while the following runs.
             queue = QueuePosition.objects.all().order_by('position')
             if queue:
-                print("queue[0].task")
-                print(queue[0].task)
-                print("task")
-                print(task)
                 if queue[0].task != task:
-                    print("First item in queue was not the same as the completed task. Something is wrong!")
+                    print("Warning: First item in queue was not the same as the completed task. Something is wrong!")
                 else:
                     for idx, queue_item in enumerate(queue):
                         if idx == 0:
@@ -159,11 +151,9 @@ def get_current_task(request):
     if not current_task:
         # Create an empty json element.
         current_task_json = serialize("json", [])
-        print("current empty task")
     else:
         # Serialize the task object as json.
         current_task_json = serialize("json", [current_task])
-        print("current task: id " + str(current_task.pk))
 
     return HttpResponse(current_task_json, content_type="application/json")
 
@@ -171,13 +161,6 @@ def get_current_task(request):
 def get_finished_tasks(request):
     # Get all finished tasks from database.
     finished_tasks = ProcessingTask.objects.filter(is_done=True)
-
-    string = ""
-    string += "finished_tasks\n"
-    for task in finished_tasks:
-        string += str(task)
-        string += "\n"
-    print(string)
 
     # Serialize the task objects as json.
     finished_tasks_json = serialize("json", finished_tasks)
@@ -187,27 +170,10 @@ def get_finished_tasks(request):
 
 
 def get_queued_tasks(request):
-    print("number of tasks:    " + str(len(ProcessingTask.objects.all())))
-    print("number of queuepos: " + str(len(QueuePosition.objects.all())))
     # Get whole queue.
     queue = QueuePosition.objects.all()
     # Get all ProcessingTasks that appear as foreign keys in queue and that is not a foreign key in ProcessingStatus.
     queued_tasks = ProcessingTask.objects.filter(queueposition__in=queue, processingstatus=None)
-
-    string = ""
-    string += "queued_tasks\n"
-    for task in queued_tasks:
-        string += str(task)
-        string += "\n"
-    print(string)
-    # Get all queued (non-finished, not currently running) tasks from database.
-    # queued_tasks = ProcessingTask.objects.filter(is_done=False, processingstatus=None)
-
-    # Check for currently running task and remove it from the queued list.
-    # status = ProcessingStatus.objects.first()
-    # if status:
-    #     running_task = status.current_task
-    #     if running_task:
 
     # Serialize the task objects as json.
     queued_tasks_json = "{}"
@@ -222,7 +188,6 @@ def get_queued_tasks(request):
 def index(request):
     print("Entering index function")
     task_list = ProcessingTask.objects.all()
-    log_folder = "C:/utveckling/Django/queue_gui_processing"
 
     # Check if a ProcessingStatus exists and create one if not.
     status = ProcessingStatus.objects.all()
@@ -232,6 +197,6 @@ def index(request):
         new_status.current_task = None
         new_status.save()
 
-    default_command = "python C:/spotscale/development/queui/print_tet.py whatevs"
+    default_command = "python C:/spotscale/development/queui/wait_and_print.py whatevs"
 
     return render(request, 'processing/index.html', {'start_text': default_command})

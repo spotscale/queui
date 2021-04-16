@@ -73,4 +73,4 @@ function fillTaskList(data, listToPopulate) {
 }
 
 // Start the polling of tasks with a millisecond interval.
-var threadInterval = setInterval(pollTasks, 5000)
+var threadInterval = setInterval(pollTasks, 3000)
