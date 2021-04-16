@@ -184,7 +184,7 @@ def get_queued_tasks(request):
     return HttpResponse(queued_tasks_json, content_type="application/json")
 
 
-# @ensure_csrf_cookie
+@ensure_csrf_cookie
 def index(request):
     print("Entering index function")
     task_list = ProcessingTask.objects.all()
