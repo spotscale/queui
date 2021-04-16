@@ -55,7 +55,7 @@
     {% load static %}
     <script src="https://code.jquery.com/jquery-3.3.1.min.js" ></script>
     <script>
-        var run_task_url = "{% url 'processing:start_task' %}"
+        var add_task_url = "{% url 'processing:add_task' %}"
         var get_current_url = "{% url 'processing:get_current_task' %}"
         var get_finished_url = "{% url 'processing:get_finished_tasks' %}"
         var get_queued_url = "{% url 'processing:get_queued_tasks' %}"
@@ -88,7 +88,7 @@
 <div class="processingTask">
     <label for="input_command">Command </label>
     <input id="input_command" type="text" name="input_command" size="50" value="{{ start_text }}">
-    <input type="submit" value="Process" onclick="runTask()">
+    <input type="submit" value="Process" onclick="addTask()">
 </div>
 
 <hgroup>

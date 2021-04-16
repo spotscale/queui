@@ -39,12 +39,14 @@ function checkTasksChanged(data) {
 }
 
 function fillTaskList(data, listToPopulate) {
-    if (checkTasksChanged(data)) {
-        document.getElementById(listToPopulate).innerHTML = ""
+    // TODO Check if data has changed since last time this list was populated (to avoid re-rendering so much).
 
+    document.getElementById(listToPopulate).innerHTML = ""
+
+    if (data != "")
+    {
         for (var i = 0; i < data.length; i++) {
             var task = data[i]
-
             var title = task["fields"]["title"]
             var addedBy = task["fields"]["added_by"]
             var position = task["fields"]["position"]
@@ -70,5 +72,5 @@ function fillTaskList(data, listToPopulate) {
     }
 }
 
-// Start the polling of tasks with a 1000 millisecond interval.
-var threadInterval = setInterval(pollTasks, 1000)
+// Start the polling of tasks with a millisecond interval.
+var threadInterval = setInterval(pollTasks, 5000)
